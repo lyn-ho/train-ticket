@@ -1,63 +1,20 @@
-import React, { useState, useMemo, PureComponent, memo, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 
 
-// const Counter = memo(function Counter(props) {
-//   console.log('Counter render')
+function useCounter(count) {
+  console.log('Counter render')
+  const size = useSize()
 
-//   return (
-//     <h1 onClick={props.onClick}>{props.count}</h1>
-//   )
-// })
-
-class Counter extends PureComponent {
-  speak() {
-    console.log(`now counter is: ${this.props.count}`)
-  }
-
-  render() {
-    const { onClick, count } = this.props
-
-    return (<h1 onClick={onClick}>{count}</h1>)
-  }
+  return (
+    <h1>{count}, {size.width}x{size.height}</h1>
+  )
 }
 
 
-function App() {
-  const [count, setCount] = useState(0)
-  const [clickCount, setClickCount] = useState(0)
-
-  const counterRef = useRef()
-
-  const double = useMemo(() => {
-    return count * 2
-  }, [count])
-
-  const half = useMemo(() => {
-    return double / 4
-  }, [double])
-
+function useCount(defaultCount) {
+  const [count, setCount] = useState(defaultCount)
   const it = useRef()
-
-  // const onClick = useMemo(() => {
-  //   return () => {
-  //     console.log('Click')
-  //   }
-  // }, [])
-
-  // const onClick = useCallback(() => {
-  //   console.log('Click')
-  //   setClickCount(clickCount + 1)
-  // }, [clickCount])
-
-
-  const onClick = useCallback(() => {
-    console.log('Click')
-    setClickCount(clickCount => clickCount + 1)
-
-    // console.log(counterRef.current)
-    counterRef.current.speak()
-  }, [counterRef])
 
   useEffect(() => {
     it.current = setInterval(() => {
@@ -71,11 +28,44 @@ function App() {
     }
   })
 
+  return [count, setCount]
+}
+
+function useSize() {
+  const [size, setSize] = useState({
+    width: document.documentElement.clientWidth,
+    height: document.documentElement.clientHeight,
+  })
+
+  const onResize = useCallback(() => {
+    setSize({
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight,
+    })
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('resize', onResize, false)
+
+    return () => {
+      window.removeEventListener('resize', onResize, false)
+    }
+  }, [onResize])
+
+  return size
+}
+
+
+function App() {
+  const [count, setCount] = useCount(0)
+  const Counter = useCounter(count)
+  const size = useSize()
+
   return (
     <>
       <button onClick={() => { setCount(count + 1) }}>Click ({count})</button>
-      <p>{half}</p>
-      <Counter ref={counterRef} count={double} onClick={onClick} />
+      {Counter}
+      <p>{size.width}x{size.height}</p>
     </>
   )
 
