@@ -1,38 +1,61 @@
-import React, { Component, lazy, Suspense } from 'react';
+import React, { Component, memo } from 'react';
 import './App.css';
 
-const About = lazy(() => import(/* webpackChunkName: "about" */ './About.jsx'))
+// class Foo extends Component {
+//   shouldComponentUpdate(nextProps, nextState) {
+//     if (nextProps.name === this.props.name) {
+//       return false
+//     }
 
-// ErrorBoundary
-// componentDidCatch
+//     return true
+//   }
+
+//   render() {
+//     console.log('Foo render')
+
+//     return null
+//   }
+// }
+
+// class Foo extends PureComponent {
+//   render() {
+//     console.log('Foo render')
+
+//     return <div>{this.props.person.age}</div>
+//   }
+// }
+
+const Foo = memo(function Foo(props) {
+  return <div>{props.person.age}</div>
+})
 
 class App extends Component {
   state = {
-    hasError: false
-  }
-
-  static getDerivedStateFromError() {
-    return {
-      hasError: true
+    count: 0,
+    person: {
+      age: 18
     }
   }
 
-  // componentDidCatch() {
-  //   this.setState({
-  //     hasError: true
-  //   })
-  // }
+  callback = () => { }
 
   render() {
-    if (this.state.hasError) {
-      return <div>Error</div>
-    }
-
+    const { person } = this.state
     return (
+      // <div>
+      //   <button onClick={() => {
+      //     person.age++
+      //     this.setState({ person })
+      //   }}>Add</button>
+      //   <Foo person={person} />
+      // </div>
       <div>
-        <Suspense fallback={<h2>loading...</h2>}>
-          <About />
-        </Suspense>
+        <button onClick={() => {
+          person.age++
+          this.setState({ count: this.count + 1 })
+        }}>Add</button>
+        {/* <Foo person={person} cb={() => { }} /> */}
+        <Foo person={person} cb={this.callback} />
       </div>
     )
 
