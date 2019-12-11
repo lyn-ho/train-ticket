@@ -1,65 +1,31 @@
-import React, { Component, memo } from 'react';
-import './App.css';
+import React, { useState } from 'react';
 
-// class Foo extends Component {
-//   shouldComponentUpdate(nextProps, nextState) {
-//     if (nextProps.name === this.props.name) {
-//       return false
-//     }
-
-//     return true
+// class App2 extends Component {
+//   state = {
+//     count: 0
 //   }
 
 //   render() {
-//     console.log('Foo render')
+//     const { count } = this.state
+//     return (
+//       <button onClick={() => { this.setState({ count: count + 1 }) }}>Click ({count})</button>
 
-//     return null
+//     )
 //   }
 // }
 
-// class Foo extends PureComponent {
-//   render() {
-//     console.log('Foo render')
 
-//     return <div>{this.props.person.age}</div>
-//   }
-// }
+function App(props) {
+  // const [count, setCount] = useState(0)
+  const [count, setCount] = useState(() => (props.defaultCount || 0))
+  const [name, setName] = useState('Lyn')
 
-const Foo = memo(function Foo(props) {
-  return <div>{props.person.age}</div>
-})
 
-class App extends Component {
-  state = {
-    count: 0,
-    person: {
-      age: 18
-    }
-  }
+  return (
+    <button onClick={() => { setCount(count + 1) }}>Click ({count}), ({name})</button>
+  )
 
-  callback = () => { }
-
-  render() {
-    const { person } = this.state
-    return (
-      // <div>
-      //   <button onClick={() => {
-      //     person.age++
-      //     this.setState({ person })
-      //   }}>Add</button>
-      //   <Foo person={person} />
-      // </div>
-      <div>
-        <button onClick={() => {
-          person.age++
-          this.setState({ count: this.count + 1 })
-        }}>Add</button>
-        {/* <Foo person={person} cb={() => { }} /> */}
-        <Foo person={person} cb={this.callback} />
-      </div>
-    )
-
-  };
 }
+
 
 export default App;
