@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useEffect, memo } from 'react'
 
 import './App.css'
 import { createAdd, createRemove, createSet, createToggle } from './actions'
+import reducer from './reducers'
 
 let idSeq = Date.now()
 
@@ -87,34 +88,30 @@ const Todos = memo(function Todos(props) {
 
 function TodoList() {
   const [todos, setTodos] = useState([])
+  const [incrementCount, setIncrementCount] = useState(0)
+
+
 
   const dispatch = useCallback((action) => {
-    const { type, payload } = action
+    const state = { todos, incrementCount }
 
-    switch (type) {
-      case 'set':
-        setTodos(payload)
-        break;
-      case 'add':
-        setTodos(todos => [...todos, payload])
-        break;
-      case 'remove':
-        setTodos(todos => todos.filter(todo => todo.id !== payload))
-        break;
-      case 'toggle':
-        setTodos(todos => todos.map(todo => {
-          return todo.id === payload ? { ...todo, complete: !todo.complete } : todo
-        }))
-        break;
-      default:
-        break;
+    const setters = {
+      todos: setTodos,
+      incrementCount: setIncrementCount
     }
-  }, [])
+
+    const newState = reducer(state, action)
+
+    for (let key in newState) {
+      setters[key](newState[key])
+    }
+  }, [todos, incrementCount])
 
   useEffect(() => {
     const todos = JSON.parse(localStorage.getItem(LS_KEY)) || []
     dispatch(createSet(todos))
-  }, [dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     localStorage.setItem(LS_KEY, JSON.stringify(todos))
