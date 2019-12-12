@@ -1,9 +1,25 @@
 import React, { useState, useCallback, useRef, useEffect, memo } from 'react'
 
 import './App.css'
+import { createAdd, createRemove, createSet, createToggle } from './actions'
 
 let idSeq = Date.now()
+
 const LS_KEY = '_$-todos_'
+
+function bindActionCreators(actionCreators, dispatch) {
+  const ret = {}
+
+  for (let key in actionCreators) {
+    ret[key] = function (...arg) {
+      const actionCreator = actionCreators[key]
+      const action = actionCreator(...arg)
+      dispatch(action)
+    }
+  }
+
+  return ret
+}
 
 const Control = memo(function Control(props) {
   const { addTodo } = props
@@ -36,7 +52,7 @@ const Control = memo(function Control(props) {
 })
 
 const TodoItem = memo(function TodoItem(props) {
-  const { todo: { id, text, complete }, toggleTodo, removeTodo } = props
+  const { todo: { id, text, complete }, removeTodo, toggleTodo } = props
 
   const onChange = () => {
     toggleTodo(id)
@@ -56,13 +72,13 @@ const TodoItem = memo(function TodoItem(props) {
 })
 
 const Todos = memo(function Todos(props) {
-  const { todos, toggleTodo, removeTodo } = props
+  const { todos, removeTodo, toggleTodo } = props
 
   return (
     <ul>
       {
         todos.map(todo => {
-          return <TodoItem key={todo.id} todo={todo} toggleTodo={toggleTodo} removeTodo={removeTodo} />
+          return <TodoItem key={todo.id} todo={todo} removeTodo={removeTodo} toggleTodo={toggleTodo} />
         })
       }
     </ul>
@@ -72,24 +88,33 @@ const Todos = memo(function Todos(props) {
 function TodoList() {
   const [todos, setTodos] = useState([])
 
-  const addTodo = useCallback((todo) => {
-    setTodos(todos => [...todos, todo])
-  }, [])
+  const dispatch = useCallback((action) => {
+    const { type, payload } = action
 
-  const removeTodo = useCallback((id) => {
-    setTodos(todos => todos.filter(todo => todo.id !== id))
-  }, [])
-
-  const toggleTodo = useCallback((id) => {
-    setTodos(todos => todos.map(todo => {
-      return todo.id === id ? { ...todo, complete: !todo.complete } : todo
-    }))
+    switch (type) {
+      case 'set':
+        setTodos(payload)
+        break;
+      case 'add':
+        setTodos(todos => [...todos, payload])
+        break;
+      case 'remove':
+        setTodos(todos => todos.filter(todo => todo.id !== payload))
+        break;
+      case 'toggle':
+        setTodos(todos => todos.map(todo => {
+          return todo.id === payload ? { ...todo, complete: !todo.complete } : todo
+        }))
+        break;
+      default:
+        break;
+    }
   }, [])
 
   useEffect(() => {
     const todos = JSON.parse(localStorage.getItem(LS_KEY)) || []
-    setTodos(todos)
-  }, [])
+    dispatch(createSet(todos))
+  }, [dispatch])
 
   useEffect(() => {
     localStorage.setItem(LS_KEY, JSON.stringify(todos))
@@ -97,8 +122,17 @@ function TodoList() {
 
   return (
     <div className="todo-list">
-      <Control addTodo={addTodo} />
-      <Todos removeTodo={removeTodo} toggleTodo={toggleTodo} todos={todos} />
+      <Control {
+        ...bindActionCreators({
+          addTodo: createAdd
+        }, dispatch)
+      } />
+      <Todos {
+        ...bindActionCreators({
+          removeTodo: createRemove,
+          toggleTodo: createToggle
+        }, dispatch)
+      } todos={todos} />
     </div>
   )
 }
