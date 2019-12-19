@@ -8,7 +8,7 @@ import CitySelector from '../common/CitySelector'
 import DepartData from './DepartDate'
 import HighSpeed from './HighSpeed'
 import Journey from './Journey'
-import { exchangeFromTo, showCitySelector, hideCitySelector, fetchCityData } from './actions'
+import { exchangeFromTo, showCitySelector, hideCitySelector, fetchCityData, setSelectedCity } from './actions'
 
 function App(props) {
   const { from, to, isCitySelectorVisible, cityData, isLoadingCityData, dispatch } = props
@@ -41,6 +41,7 @@ function App(props) {
       {
         onBack: hideCitySelector,
         fetchCityData,
+        onSelect: setSelectedCity,
       },
       dispatch,
     )
