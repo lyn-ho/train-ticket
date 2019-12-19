@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import './App.css'
@@ -6,10 +7,32 @@ import Header from '../common/Header'
 import DepartData from './DepartDate'
 import HighSpeed from './HighSpeed'
 import Journey from './Journey'
+import { exchangeFromTo, showCitySelector } from './actions'
 
 function App(props) {
+  const { from, to, dispatch } = props
+
   const onBack = useCallback(() => {
     window.history.back()
+  }, [])
+
+  // const doExchangeFromTo = useCallback(() => {
+  //   dispatch(exchangeFromTo())
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
+
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // const doShowCitySelector = useCallback((bool) => dispatch(showCitySelector(bool)), [])
+
+  const cbs = useMemo(() => {
+    return bindActionCreators(
+      {
+        exchangeFromTo,
+        showCitySelector,
+      },
+      dispatch,
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -17,18 +40,21 @@ function App(props) {
       <div className="header-wrapper">
         <Header title="火车票" onBack={onBack} />
       </div>
-      <Journey />
-      <HighSpeed />
-      <DepartData />
+      <form className="form">
+        {/* <Journey from={from} to={to} exchangeFromTo={doExchangeFromTo} showCitySelector={doShowCitySelector} /> */}
+        <Journey from={from} to={to} {...cbs} />
+        <HighSpeed />
+        <DepartData />
+      </form>
     </div>
   )
 }
 
 export default connect(
   function mapStateToProps(state) {
-    return {}
+    return state
   },
   function mapDispatchToProps(dispatch) {
-    return {}
+    return { dispatch }
   },
 )(App)
