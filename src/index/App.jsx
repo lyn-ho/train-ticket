@@ -8,10 +8,17 @@ import CitySelector from '../common/CitySelector'
 import DepartData from './DepartDate'
 import HighSpeed from './HighSpeed'
 import Journey from './Journey'
-import { exchangeFromTo, showCitySelector, hideCitySelector, fetchCityData, setSelectedCity } from './actions'
+import {
+  exchangeFromTo,
+  showCitySelector,
+  hideCitySelector,
+  fetchCityData,
+  setSelectedCity,
+  showDateSelector,
+} from './actions'
 
 function App(props) {
-  const { from, to, isCitySelectorVisible, cityData, isLoadingCityData, dispatch } = props
+  const { from, to, isCitySelectorVisible, cityData, isLoadingCityData, departDate, dispatch } = props
 
   const onBack = useCallback(() => {
     window.history.back()
@@ -36,12 +43,22 @@ function App(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const CitySelectorCbs = useMemo(() => {
+  const citySelectorCbs = useMemo(() => {
     return bindActionCreators(
       {
         onBack: hideCitySelector,
         fetchCityData,
         onSelect: setSelectedCity,
+      },
+      dispatch,
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const departDateCbs = useMemo(() => {
+    return bindActionCreators(
+      {
+        onClick: showDateSelector,
       },
       dispatch,
     )
@@ -57,13 +74,13 @@ function App(props) {
         {/* <Journey from={from} to={to} exchangeFromTo={doExchangeFromTo} showCitySelector={doShowCitySelector} /> */}
         <Journey from={from} to={to} {...cbs} />
         <HighSpeed />
-        <DepartData />
+        <DepartData time={departDate} {...departDateCbs} />
       </form>
       <CitySelector
         show={isCitySelectorVisible}
         cityData={cityData}
         isLoading={isLoadingCityData}
-        {...CitySelectorCbs}
+        {...citySelectorCbs}
       />
     </div>
   )
