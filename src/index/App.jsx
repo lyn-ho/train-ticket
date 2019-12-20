@@ -9,6 +9,7 @@ import DateSelector from '../common/DateSelector'
 import DepartData from './DepartDate'
 import HighSpeed from './HighSpeed'
 import Journey from './Journey'
+import Submit from './Submit'
 import {
   exchangeFromTo,
   showCitySelector,
@@ -18,6 +19,7 @@ import {
   showDateSelector,
   hideDateSelector,
   setDepartDate,
+  toggleHighSpeed,
 } from './actions'
 import { h0 } from '../common/utils'
 
@@ -30,6 +32,7 @@ function App(props) {
     isLoadingCityData,
     departDate,
     isDateSelectorVisible,
+    highSpeed,
     dispatch,
   } = props
 
@@ -100,6 +103,11 @@ function App(props) {
     [dispatch],
   )
 
+  const highSpeedCbs = useMemo(() => {
+    return bindActionCreators({ toggle: toggleHighSpeed }, dispatch)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div>
       <div className="header-wrapper">
@@ -108,8 +116,9 @@ function App(props) {
       <form className="form">
         {/* <Journey from={from} to={to} exchangeFromTo={doExchangeFromTo} showCitySelector={doShowCitySelector} /> */}
         <Journey from={from} to={to} {...cbs} />
-        <HighSpeed />
         <DepartData time={departDate} {...departDateCbs} />
+        <HighSpeed highSpeed={highSpeed} {...highSpeedCbs} />
+        <Submit />
       </form>
       <CitySelector
         show={isCitySelectorVisible}
