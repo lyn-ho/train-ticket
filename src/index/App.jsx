@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import './App.css'
 import Header from '../common/Header'
 import CitySelector from '../common/CitySelector'
+import DateSelector from '../common/DateSelector'
 import DepartData from './DepartDate'
 import HighSpeed from './HighSpeed'
 import Journey from './Journey'
@@ -15,10 +16,20 @@ import {
   fetchCityData,
   setSelectedCity,
   showDateSelector,
+  hideDateSelector,
 } from './actions'
 
 function App(props) {
-  const { from, to, isCitySelectorVisible, cityData, isLoadingCityData, departDate, dispatch } = props
+  const {
+    from,
+    to,
+    isCitySelectorVisible,
+    cityData,
+    isLoadingCityData,
+    departDate,
+    isDateSelectorVisible,
+    dispatch,
+  } = props
 
   const onBack = useCallback(() => {
     window.history.back()
@@ -65,6 +76,16 @@ function App(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const dateSelectorCbs = useMemo(() => {
+    return bindActionCreators(
+      {
+        onBack: hideDateSelector,
+      },
+      dispatch,
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div>
       <div className="header-wrapper">
@@ -82,6 +103,7 @@ function App(props) {
         isLoading={isLoadingCityData}
         {...citySelectorCbs}
       />
+      <DateSelector show={isDateSelectorVisible} {...dateSelectorCbs} />
     </div>
   )
 }
