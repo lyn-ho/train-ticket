@@ -17,7 +17,7 @@ export default function DepartDate(props) {
 
   const isToday = h0OfDepart === h0()
 
-  const weekString = ` 周${'日一二三四五六'.split('')[departDate.getDay()]} ${isToday && '（今天）'}`
+  const weekString = ` 周${'日一二三四五六'.split('')[departDate.getDay()]} ${isToday ? '（今天）' : ''}`
 
   return (
     <div className="depart-date" onClick={onClick}>

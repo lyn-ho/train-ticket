@@ -17,7 +17,9 @@ import {
   setSelectedCity,
   showDateSelector,
   hideDateSelector,
+  setDepartDate,
 } from './actions'
+import { h0 } from '../common/utils'
 
 function App(props) {
   const {
@@ -86,6 +88,18 @@ function App(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const onSelectDate = useCallback(
+    (day) => {
+      if (!day) return
+
+      if (day < h0()) return
+
+      dispatch(setDepartDate(day))
+      dispatch(hideDateSelector())
+    },
+    [dispatch],
+  )
+
   return (
     <div>
       <div className="header-wrapper">
@@ -103,7 +117,7 @@ function App(props) {
         isLoading={isLoadingCityData}
         {...citySelectorCbs}
       />
-      <DateSelector show={isDateSelectorVisible} {...dateSelectorCbs} />
+      <DateSelector show={isDateSelectorVisible} {...dateSelectorCbs} onSelect={onSelectDate} />
     </div>
   )
 }
