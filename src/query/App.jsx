@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import URI from 'urijs'
 import dayjs from 'dayjs'
@@ -24,6 +25,10 @@ import {
   setArriveStations,
   prevDate,
   nextDate,
+  toggleOrderType,
+  toggleHighSpeed,
+  toggleOnlyTickets,
+  toggleIsFiltersVisible,
 } from './actions'
 
 function App(props) {
@@ -32,7 +37,7 @@ function App(props) {
     from,
     to,
     departDate,
-    hightSpeed,
+    highSpeed,
     searchParsed,
     orderType,
     onlyTickets,
@@ -44,17 +49,18 @@ function App(props) {
     departTimeEnd,
     arriveTimeStart,
     arriveTimeEnd,
+    isFiltersVisible,
     dispatch,
   } = props
 
   useEffect(() => {
     const queries = URI.parseQuery(window.location.search)
-    const { from, to, hightSpeed, date } = queries
+    const { from, to, highSpeed, date } = queries
 
     dispatch(setFrom(from))
     dispatch(setTo(to))
     dispatch(setDepartDate(h0(dayjs(date).valueOf())))
-    dispatch(setHighSpeed(hightSpeed === 'true'))
+    dispatch(setHighSpeed(highSpeed === 'true'))
 
     dispatch(setSearchParsed(true))
   }, [dispatch])
@@ -68,7 +74,7 @@ function App(props) {
       .setSearch('from', from)
       .setSearch('to', to)
       .setSearch('date', dayjs(departDate).format('YYYY-MM-DD'))
-      .setSearch('hightSpeed', hightSpeed)
+      .setSearch('highSpeed', highSpeed)
       .setSearch('orderType', orderType)
       .setSearch('onlyTickets', onlyTickets)
       .setSearch('checkedTicketTypes', Object.keys(checkedTicketTypes).join())
@@ -111,7 +117,7 @@ function App(props) {
     departTimeStart,
     dispatch,
     from,
-    hightSpeed,
+    highSpeed,
     onlyTickets,
     orderType,
     searchParsed,
@@ -124,6 +130,19 @@ function App(props) {
 
   const { isPrevDisabled, isNextDisabled, prev, next } = useNav(dispatch, departDate, prevDate, nextDate)
 
+  const bottomCbs = useMemo(() => {
+    return bindActionCreators(
+      {
+        toggleOrderType,
+        toggleHighSpeed,
+        toggleOnlyTickets,
+        toggleIsFiltersVisible,
+      },
+      dispatch,
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   if (!searchParsed) return null
 
   return (
@@ -133,7 +152,13 @@ function App(props) {
       </div>
       <Nav date={departDate} isPrevDisabled={isPrevDisabled} isNextDisabled={isNextDisabled} prev={prev} next={next} />
       <List list={trainList} />
-      <Bottom />
+      <Bottom
+        highSpeed={highSpeed}
+        orderType={orderType}
+        onlyTickets={onlyTickets}
+        isFiltersVisible={isFiltersVisible}
+        {...bottomCbs}
+      />
     </div>
   )
 }
