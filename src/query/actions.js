@@ -137,7 +137,7 @@ export function setCheckedDepartStations(checkedDepartStations) {
   }
 }
 
-export function setArriveStation(arriveStation) {
+export function setArriveStations(arriveStation) {
   return {
     type: ACTION_SET_ARRIVE_STATIONS,
     payload: arriveStation,
