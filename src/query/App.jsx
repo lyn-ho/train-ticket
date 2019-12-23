@@ -28,6 +28,7 @@ import {
 
 function App(props) {
   const {
+    trainList,
     from,
     to,
     departDate,
@@ -131,7 +132,7 @@ function App(props) {
         <Header title={`${from} ⇀ ${to}`} onBack={onBack} />
       </div>
       <Nav date={departDate} isPrevDisabled={isPrevDisabled} isNextDisabled={isNextDisabled} prev={prev} next={next} />
-      <List />
+      <List list={trainList} />
       <Bottom />
     </div>
   )
