@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 import './Bottom.css'
+import Slider from './Slider'
 import { ORDER_DEPART } from './constant'
 
 const Filter = memo(function Filter(props) {
@@ -98,6 +99,11 @@ const BottomModal = memo(function BottomModal(props) {
     return { ...checkedArriveStations }
   })
 
+  const [localDepartTimeStart, setLocalDepartTimeStart] = useState(departTimeStart)
+  const [localDepartTimeEnd, setLocalDepartTimeEnd] = useState(departTimeEnd)
+  const [localArriveTimeStart, setLocalArriveTimeStart] = useState(arriveTimeStart)
+  const [localArriveTimeEnd, setLocalArriveTimeEnd] = useState(arriveTimeEnd)
+
   const optionGroup = [
     {
       title: '坐席类型',
@@ -137,6 +143,20 @@ const BottomModal = memo(function BottomModal(props) {
             {optionGroup.map((group) => (
               <Option key={group.title} {...group} />
             ))}
+            <Slider
+              title="出发时间"
+              currentStartHours={localDepartTimeStart}
+              currentEndHours={localDepartTimeEnd}
+              onStartChanged={setLocalDepartTimeStart}
+              onEndChanged={setLocalDepartTimeEnd}
+            />
+            <Slider
+              title="到达时间"
+              currentStartHours={localArriveTimeStart}
+              currentEndHours={localArriveTimeEnd}
+              onStartChanged={setLocalArriveTimeStart}
+              onEndChanged={setLocalArriveTimeEnd}
+            />
           </div>
         </div>
       </div>
