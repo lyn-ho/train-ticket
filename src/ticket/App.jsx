@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from 'react'
+import React, { useEffect, useCallback, useMemo, lazy, Suspense } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import URI from 'urijs'
@@ -9,7 +9,7 @@ import Header from '../common/Header'
 import Nav from '../common/Nav'
 import Detail from '../common/Detail'
 import Candidate from './Candidate'
-import Schedule from './Schedule'
+// import Schedule from './Schedule'
 import { h0 } from '../common/utils'
 import useNav from '../common/useNav'
 import {
@@ -27,6 +27,8 @@ import {
   setTickets,
   toggleIsScheduleVisible,
 } from './actions'
+
+const Schedule = lazy(() => import('./Schedule'))
 
 function App(props) {
   const {
@@ -122,6 +124,18 @@ function App(props) {
           {...detailCbs}
         />
       </div>
+      {isScheduleVisible && (
+        <div className="mask" onClick={() => dispatch(toggleIsScheduleVisible())}>
+          <Suspense fallback={<div>loading</div>}>
+            <Schedule
+              date={departDate}
+              trainNumber={trainNumber}
+              departStation={departStation}
+              arriveStation={arriveStation}
+            />
+          </Suspense>
+        </div>
+      )}
     </div>
   )
 }
