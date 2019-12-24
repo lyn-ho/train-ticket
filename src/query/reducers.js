@@ -61,6 +61,8 @@ export default {
     switch (type) {
       case ACTION_SET_HIGH_SPEED:
         return payload
+      case ACTION_SET_CHECKED_TRAIN_TYPES:
+        return Boolean(payload[1] && payload[5])
       default:
     }
 
@@ -138,6 +140,21 @@ export default {
     switch (type) {
       case ACTION_SET_CHECKED_TRAIN_TYPES:
         return payload
+      case ACTION_SET_HIGH_SPEED:
+        // eslint-disable-next-line no-case-declarations
+        const highSpeed = payload
+        // eslint-disable-next-line no-case-declarations
+        const newCheckedTrainTypes = { ...state }
+
+        if (highSpeed) {
+          newCheckedTrainTypes[1] = true
+          newCheckedTrainTypes[5] = true
+        } else {
+          delete newCheckedTrainTypes[1]
+          delete newCheckedTrainTypes[5]
+        }
+
+        return newCheckedTrainTypes
       default:
     }
 
