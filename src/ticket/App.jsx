@@ -1,16 +1,36 @@
-// import { connect } from 'react-redux'
+import React from 'react'
+import { connect } from 'react-redux'
 
-// import './App.css'
+import './App.css'
+import Detial from '../common/Detail'
+import Candidate from './Candidate'
+import Schedule from './Schedule'
 
-// function App(props) { }
+function App(props) {
+  const {
+    departDate,
+    arriveDate,
+    departTimeStr,
+    arriveTimeStr,
+    departStation,
+    arriveStation,
+    trainNumber,
+    durationStr,
+    tickets,
+    isScheduleVisible,
+    searchParsed,
 
-// export default connect(
-//   function mapStateToProps(state) { },
-//   function mapDispatchToProps(dispatch) { },
-// )(App)
+    dispatch,
+  } = props
 
-function App() {
-  return null
+  return <div className="app"></div>
 }
 
-export default App
+export default connect(
+  function mapStateToProps(state) {
+    return state
+  },
+  function mapDispatchToProps(dispatch) {
+    return { dispatch }
+  },
+)(App)
