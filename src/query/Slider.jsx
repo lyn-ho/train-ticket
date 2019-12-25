@@ -94,8 +94,10 @@ const Slider = memo(function Slider(props) {
 
     return () => {
       startHandle.current.removeEventListener('touchstart', onStartTouchBegin, false)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       startHandle.current.removeEventListener('touchmove', onStartTouchMove, false)
       endHandle.current.removeEventListener('touchstart', onEndTouchBegin, false)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       endHandle.current.removeEventListener('touchmove', onEndTouchMove, false)
     }
   })

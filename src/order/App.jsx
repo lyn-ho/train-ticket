@@ -94,15 +94,15 @@ function App(props) {
       },
       dispatch,
     )
-  })
+  }, [dispatch])
 
   const menuCbs = useMemo(() => {
     return bindActionCreators({ hideMenu }, dispatch)
-  })
+  }, [dispatch])
 
   const chooseCbs = useMemo(() => {
     return bindActionCreators({ updatePassenger }, dispatch)
-  })
+  }, [dispatch])
 
   if (!searchParsed) return null
 

@@ -9,7 +9,6 @@ const Passenger = memo(function Passenger(props) {
     name,
     ticketType,
     licenceNo,
-    followAdult,
     followAdultName,
     gender,
     birthday,
