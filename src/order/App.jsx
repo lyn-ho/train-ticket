@@ -21,6 +21,8 @@ import {
   fetchInitial,
   createAdult,
   createChild,
+  removePassenger,
+  updatePassenger,
 } from './actions'
 
 function App(props) {
@@ -75,7 +77,7 @@ function App(props) {
   }, [arriveStation, departDate, departStation, dispatch, searchParsed, seatType])
 
   const passengersCbs = useMemo(() => {
-    return bindActionCreators({ createAdult, createChild }, dispatch)
+    return bindActionCreators({ createAdult, createChild, removePassenger, updatePassenger }, dispatch)
   }, [dispatch])
 
   if (!searchParsed) return null
