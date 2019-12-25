@@ -27,6 +27,7 @@ import {
   setTickets,
   toggleIsScheduleVisible,
 } from './actions'
+import { TrainContext } from './context'
 
 const Schedule = lazy(() => import('./Schedule'))
 
@@ -69,7 +70,7 @@ function App(props) {
   }, [trainNumber])
 
   useEffect(() => {
-    if (!setSearchParsed) return
+    if (!searchParsed) return
 
     const url = new URI('/rest/ticket')
       .setSearch('date', dayjs(departDate).format('YYYY-MM-DD'))
@@ -89,7 +90,7 @@ function App(props) {
         dispatch(setDurationStr(durationStr))
         dispatch(setTickets(candidates))
       })
-  }, [departDate, dispatch, trainNumber])
+  }, [departDate, dispatch, searchParsed, trainNumber])
 
   const { isPrevDisabled, isNextDisabled, prev, next } = useNav(dispatch, departDate, prevDate, nextDate)
 
@@ -124,6 +125,9 @@ function App(props) {
           {...detailCbs}
         />
       </div>
+      <TrainContext.Provider value={{ trainNumber, departStation, arriveStation, departDate }}>
+        <Candidate tickets={tickets} />
+      </TrainContext.Provider>
       {isScheduleVisible && (
         <div className="mask" onClick={() => dispatch(toggleIsScheduleVisible())}>
           <Suspense fallback={<div>loading</div>}>
