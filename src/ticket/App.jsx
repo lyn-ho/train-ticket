@@ -1,6 +1,5 @@
-import React, { useEffect, useCallback, useMemo, lazy, Suspense } from 'react'
+import React, { useEffect, useCallback, lazy, Suspense } from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import URI from 'urijs'
 import dayjs from 'dayjs'
 
@@ -94,8 +93,6 @@ function App(props) {
 
   const { isPrevDisabled, isNextDisabled, prev, next } = useNav(dispatch, departDate, prevDate, nextDate)
 
-  const detailCbs = useMemo(() => bindActionCreators({ toggleIsScheduleVisible }, dispatch), [dispatch])
-
   if (!setSearchParsed) return null
 
   return (
@@ -122,8 +119,13 @@ function App(props) {
           departStation={departStation}
           arriveStation={arriveStation}
           durationStr={durationStr}
-          {...detailCbs}
-        />
+        >
+          <span className="left"></span>
+          <span className="schedule" onClick={() => dispatch(toggleIsScheduleVisible())}>
+            时刻表
+          </span>
+          <span className="right"></span>
+        </Detail>
       </div>
       <TrainContext.Provider value={{ trainNumber, departStation, arriveStation, departDate }}>
         <Candidate tickets={tickets} />
