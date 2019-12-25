@@ -11,6 +11,7 @@ import Account from './Account'
 import Choose from './Choose'
 import Passengers from './Passengers'
 import Ticket from './Ticket'
+import Menu from './Menu'
 import {
   setDepartStation,
   setArriveStation,
@@ -23,6 +24,10 @@ import {
   createChild,
   removePassenger,
   updatePassenger,
+  showGenderMenu,
+  showFollowAdultMenu,
+  showTicketTypeMenu,
+  hideMenu,
 } from './actions'
 
 function App(props) {
@@ -77,7 +82,22 @@ function App(props) {
   }, [arriveStation, departDate, departStation, dispatch, searchParsed, seatType])
 
   const passengersCbs = useMemo(() => {
-    return bindActionCreators({ createAdult, createChild, removePassenger, updatePassenger }, dispatch)
+    return bindActionCreators(
+      {
+        createAdult,
+        createChild,
+        removePassenger,
+        updatePassenger,
+        showGenderMenu,
+        showFollowAdultMenu,
+        showTicketTypeMenu,
+      },
+      dispatch,
+    )
+  }, [dispatch])
+
+  const menuCbs = useMemo(() => {
+    return bindActionCreators({ hideMenu }, dispatch)
   }, [dispatch])
 
   if (!searchParsed) return null
@@ -103,6 +123,7 @@ function App(props) {
       </div>
       <Ticket price={price} type={seatType} />
       <Passengers passengers={passengers} {...passengersCbs} />
+      <Menu show={isMenuVisible} {...menu} {...menuCbs} />
     </div>
   )
 }
